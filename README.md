@@ -66,6 +66,12 @@ You can also update manually:
 pip install --user --upgrade typing-cli
 ```
 
+## 🗑️ Uninstall
+
+```bash
+pip uninstall typing-cli -y
+```
+
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut       | Action                     |
