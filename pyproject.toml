@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typing-cli"
-version = "0.3.2"
+version = "0.3.3"
 description = "A beautiful CLI typing test to practice your typing speed"
 readme = "README.md"
 license = {text = "MIT"}
@@ -45,7 +45,7 @@ typing-test = "typingtest.__main__:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-typingtest = ["data/languages/*.json", "ui/css/*.tcss"]
+typingtest = ["data/languages/*.json", "data/code/*.json", "ui/css/*.tcss"]
 
 [tool.ruff]
 target-version = "py310"
