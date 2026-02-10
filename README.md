@@ -19,29 +19,19 @@ Practice your typing speed with real-time WPM tracking, accuracy stats, animated
 
 ## 🚀 Installation
 
-Copy-paste this in your terminal — it installs the app **and** configures PATH automatically:
-
-**Windows (PowerShell):**
-```powershell
-python -c "import urllib.request as u; exec(u.urlopen('https://raw.githubusercontent.com/lecoffre/typing-cli/main/install.py').read())"
-```
-
-**macOS / Linux:**
-```bash
-python3 -c "import urllib.request as u; exec(u.urlopen('https://raw.githubusercontent.com/lecoffre/typing-cli/main/install.py').read())"
-```
-
-Then **restart your terminal** and type `typing-cli`.
-
-### Alternative
-
 ```bash
 pip install typing-cli
 ```
 
-If the command is not found after install, you can always run:
+Then launch with:
 ```bash
 python -m typingtest
+```
+
+On first launch the app **automatically** adds `typing-cli` to your PATH.  
+Restart your terminal and from then on just type:
+```bash
+typing-cli
 ```
 
 ### From source
