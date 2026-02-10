@@ -1,0 +1,17 @@
+{
+  "name": "JavaScript",
+  "snippets": [
+    "function debounce(fn, delay) {\n  let timer;\n  return function (...args) {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn.apply(this, args), delay);\n  };\n}",
+    "class LinkedList {\n  constructor() {\n    this.head = null;\n    this.size = 0;\n  }\n\n  add(value) {\n    const node = { value, next: this.head };\n    this.head = node;\n    this.size++;\n  }\n}",
+    "const flatten = (arr) => {\n  return arr.reduce((acc, item) => {\n    return acc.concat(\n      Array.isArray(item) ? flatten(item) : item\n    );\n  }, []);\n};",
+    "async function fetchJSON(url) {\n  const response = await fetch(url);\n  if (!response.ok) {\n    throw new Error(`HTTP error: ${response.status}`);\n  }\n  return response.json();\n}",
+    "const pipe = (...fns) => (x) =>\n  fns.reduce((acc, fn) => fn(acc), x);\n\nconst double = (x) => x * 2;\nconst addOne = (x) => x + 1;\nconst result = pipe(double, addOne)(5);",
+    "const groupBy = (arr, key) => {\n  return arr.reduce((groups, item) => {\n    const val = item[key];\n    groups[val] = groups[val] || [];\n    groups[val].push(item);\n    return groups;\n  }, {});\n};",
+    "function* range(start, end, step = 1) {\n  for (let i = start; i < end; i += step) {\n    yield i;\n  }\n}\n\nconst nums = [...range(0, 10, 2)];",
+    "const observer = new IntersectionObserver(\n  (entries) => {\n    entries.forEach((entry) => {\n      if (entry.isIntersecting) {\n        entry.target.classList.add('visible');\n      }\n    });\n  },\n  { threshold: 0.5 }\n);",
+    "const memoize = (fn) => {\n  const cache = new Map();\n  return (...args) => {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key);\n    const result = fn(...args);\n    cache.set(key, result);\n    return result;\n  };\n};",
+    "try {\n  const data = JSON.parse(input);\n  const { name, age } = data;\n  console.log(`${name} is ${age} years old`);\n} catch (err) {\n  console.error('Invalid JSON:', err.message);\n}",
+    "const EventBus = {\n  events: {},\n  on(event, fn) {\n    this.events[event] = this.events[event] || [];\n    this.events[event].push(fn);\n  },\n  emit(event, ...args) {\n    (this.events[event] || []).forEach(fn => fn(...args));\n  }\n};",
+    "const deepClone = (obj) => {\n  if (obj === null || typeof obj !== 'object') return obj;\n  const clone = Array.isArray(obj) ? [] : {};\n  for (const key in obj) {\n    clone[key] = deepClone(obj[key]);\n  }\n  return clone;\n};"
+  ]
+}

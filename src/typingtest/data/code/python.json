@@ -1,0 +1,20 @@
+{
+  "name": "Python",
+  "snippets": [
+    "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n - 1) + fibonacci(n - 2)",
+    "class Stack:\n    def __init__(self):\n        self.items = []\n\n    def push(self, item):\n        self.items.append(item)\n\n    def pop(self):\n        return self.items.pop()",
+    "def binary_search(arr, target):\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1",
+    "from typing import List\n\ndef merge_sort(arr: List[int]) -> List[int]:\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)",
+    "def is_palindrome(s: str) -> bool:\n    cleaned = ''.join(c.lower() for c in s if c.isalnum())\n    return cleaned == cleaned[::-1]",
+    "import json\nfrom pathlib import Path\n\ndef load_config(path: str) -> dict:\n    data = Path(path).read_text()\n    return json.loads(data)",
+    "class LinkedList:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\n    def to_list(self):\n        result = []\n        node = self\n        while node:\n            result.append(node.val)\n            node = node.next\n        return result",
+    "def flatten(nested: list) -> list:\n    result = []\n    for item in nested:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result",
+    "from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef count_ways(n: int) -> int:\n    if n <= 0:\n        return 1\n    if n < 0:\n        return 0\n    return count_ways(n - 1) + count_ways(n - 2)",
+    "with open('data.csv', 'r') as f:\n    reader = csv.reader(f)\n    headers = next(reader)\n    for row in reader:\n        process(row)",
+    "def decorator(func):\n    def wrapper(*args, **kwargs):\n        print(f'Calling {func.__name__}')\n        result = func(*args, **kwargs)\n        print(f'Done: {result}')\n        return result\n    return wrapper",
+    "async def fetch_data(url: str) -> dict:\n    async with aiohttp.ClientSession() as session:\n        async with session.get(url) as resp:\n            return await resp.json()",
+    "try:\n    result = int(user_input)\n    if result < 0:\n        raise ValueError('Must be positive')\nexcept ValueError as e:\n    print(f'Error: {e}')\nfinally:\n    print('Done')",
+    "nums = [1, 2, 3, 4, 5, 6, 7, 8]\nevens = [x for x in nums if x % 2 == 0]\nsquares = {x: x**2 for x in nums}\ntotal = sum(x**2 for x in evens)",
+    "class Counter:\n    def __init__(self):\n        self._count = 0\n\n    @property\n    def count(self):\n        return self._count\n\n    def increment(self):\n        self._count += 1"
+  ]
+}

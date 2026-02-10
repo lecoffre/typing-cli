@@ -1,0 +1,13 @@
+{
+  "name": "Rust",
+  "snippets": [
+    "fn fibonacci(n: u32) -> u32 {\n    match n {\n        0 => 0,\n        1 => 1,\n        _ => fibonacci(n - 1) + fibonacci(n - 2),\n    }\n}",
+    "struct Point {\n    x: f64,\n    y: f64,\n}\n\nimpl Point {\n    fn new(x: f64, y: f64) -> Self {\n        Point { x, y }\n    }\n\n    fn distance(&self, other: &Point) -> f64 {\n        ((self.x - other.x).powi(2) + (self.y - other.y).powi(2)).sqrt()\n    }\n}",
+    "fn binary_search(arr: &[i32], target: i32) -> Option<usize> {\n    let mut low = 0;\n    let mut high = arr.len();\n    while low < high {\n        let mid = low + (high - low) / 2;\n        match arr[mid].cmp(&target) {\n            Ordering::Equal => return Some(mid),\n            Ordering::Less => low = mid + 1,\n            Ordering::Greater => high = mid,\n        }\n    }\n    None\n}",
+    "enum Shape {\n    Circle(f64),\n    Rectangle(f64, f64),\n    Triangle(f64, f64),\n}\n\nimpl Shape {\n    fn area(&self) -> f64 {\n        match self {\n            Shape::Circle(r) => std::f64::consts::PI * r * r,\n            Shape::Rectangle(w, h) => w * h,\n            Shape::Triangle(b, h) => 0.5 * b * h,\n        }\n    }\n}",
+    "use std::collections::HashMap;\n\nfn word_count(text: &str) -> HashMap<&str, usize> {\n    let mut counts = HashMap::new();\n    for word in text.split_whitespace() {\n        *counts.entry(word).or_insert(0) += 1;\n    }\n    counts\n}",
+    "fn flatten<T: Clone>(nested: &[Vec<T>]) -> Vec<T> {\n    nested.iter().flat_map(|v| v.clone()).collect()\n}",
+    "struct Stack<T> {\n    items: Vec<T>,\n}\n\nimpl<T> Stack<T> {\n    fn new() -> Self {\n        Stack { items: Vec::new() }\n    }\n\n    fn push(&mut self, item: T) {\n        self.items.push(item);\n    }\n\n    fn pop(&mut self) -> Option<T> {\n        self.items.pop()\n    }\n}",
+    "fn is_palindrome(s: &str) -> bool {\n    let cleaned: String = s.chars()\n        .filter(|c| c.is_alphanumeric())\n        .map(|c| c.to_lowercase().next().unwrap())\n        .collect();\n    cleaned == cleaned.chars().rev().collect::<String>()\n}"
+  ]
+}

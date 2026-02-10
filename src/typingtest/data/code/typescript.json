@@ -1,0 +1,17 @@
+{
+  "name": "TypeScript",
+  "snippets": [
+    "function fibonacci(n: number): number {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}",
+    "interface User {\n  id: number;\n  name: string;\n  email: string;\n  isActive: boolean;\n}\n\nfunction greet(user: User): string {\n  return `Hello, ${user.name}!`;\n}",
+    "class Stack<T> {\n  private items: T[] = [];\n\n  push(item: T): void {\n    this.items.push(item);\n  }\n\n  pop(): T | undefined {\n    return this.items.pop();\n  }\n\n  get size(): number {\n    return this.items.length;\n  }\n}",
+    "const binarySearch = (arr: number[], target: number): number => {\n  let low = 0;\n  let high = arr.length - 1;\n  while (low <= high) {\n    const mid = Math.floor((low + high) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) low = mid + 1;\n    else high = mid - 1;\n  }\n  return -1;\n};",
+    "type Result<T, E> = \n  | { ok: true; value: T }\n  | { ok: false; error: E };\n\nfunction divide(a: number, b: number): Result<number, string> {\n  if (b === 0) return { ok: false, error: 'Division by zero' };\n  return { ok: true, value: a / b };\n}",
+    "async function fetchData<T>(url: string): Promise<T> {\n  const response = await fetch(url);\n  if (!response.ok) {\n    throw new Error(`HTTP ${response.status}`);\n  }\n  return response.json() as Promise<T>;\n}",
+    "const debounce = <T extends (...args: any[]) => void>(\n  fn: T,\n  delay: number\n): ((...args: Parameters<T>) => void) => {\n  let timer: ReturnType<typeof setTimeout>;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), delay);\n  };\n};",
+    "enum Direction {\n  Up = 'UP',\n  Down = 'DOWN',\n  Left = 'LEFT',\n  Right = 'RIGHT',\n}\n\nfunction move(dir: Direction): void {\n  console.log(`Moving ${dir}`);\n}",
+    "const nums: number[] = [1, 2, 3, 4, 5];\nconst doubled = nums.map(x => x * 2);\nconst evens = nums.filter(x => x % 2 === 0);\nconst sum = nums.reduce((acc, x) => acc + x, 0);",
+    "class EventEmitter {\n  private listeners: Map<string, Function[]> = new Map();\n\n  on(event: string, fn: Function): void {\n    const fns = this.listeners.get(event) || [];\n    fns.push(fn);\n    this.listeners.set(event, fns);\n  }\n\n  emit(event: string, ...args: any[]): void {\n    const fns = this.listeners.get(event) || [];\n    fns.forEach(fn => fn(...args));\n  }\n}",
+    "function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {\n  return arr.reduce((acc, item) => {\n    const k = String(item[key]);\n    (acc[k] = acc[k] || []).push(item);\n    return acc;\n  }, {} as Record<string, T[]>);\n}",
+    "const memoize = <T extends (...args: any[]) => any>(fn: T): T => {\n  const cache = new Map<string, ReturnType<T>>();\n  return ((...args: any[]) => {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key)!;\n    const result = fn(...args);\n    cache.set(key, result);\n    return result;\n  }) as T;\n};"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Go",
+  "snippets": [
+    "func fibonacci(n int) int {\n\tif n <= 1 {\n\t\treturn n\n\t}\n\treturn fibonacci(n-1) + fibonacci(n-2)\n}",
+    "type Stack struct {\n\titems []interface{}\n}\n\nfunc (s *Stack) Push(item interface{}) {\n\ts.items = append(s.items, item)\n}\n\nfunc (s *Stack) Pop() interface{} {\n\tif len(s.items) == 0 {\n\t\treturn nil\n\t}\n\titem := s.items[len(s.items)-1]\n\ts.items = s.items[:len(s.items)-1]\n\treturn item\n}",
+    "func binarySearch(arr []int, target int) int {\n\tlow, high := 0, len(arr)-1\n\tfor low <= high {\n\t\tmid := (low + high) / 2\n\t\tif arr[mid] == target {\n\t\t\treturn mid\n\t\t} else if arr[mid] < target {\n\t\t\tlow = mid + 1\n\t\t} else {\n\t\t\thigh = mid - 1\n\t\t}\n\t}\n\treturn -1\n}",
+    "func wordCount(text string) map[string]int {\n\tcounts := make(map[string]int)\n\twords := strings.Fields(text)\n\tfor _, word := range words {\n\t\tcounts[word]++\n\t}\n\treturn counts\n}",
+    "type Server struct {\n\taddr string\n\tport int\n}\n\nfunc NewServer(addr string, port int) *Server {\n\treturn &Server{addr: addr, port: port}\n}\n\nfunc (s *Server) Start() error {\n\tlistener, err := net.Listen(\"tcp\", fmt.Sprintf(\"%s:%d\", s.addr, s.port))\n\tif err != nil {\n\t\treturn err\n\t}\n\tdefer listener.Close()\n\treturn nil\n}",
+    "func isPalindrome(s string) bool {\n\trunes := []rune(strings.ToLower(s))\n\tfor i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {\n\t\tif runes[i] != runes[j] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}",
+    "func fetchURL(url string) ([]byte, error) {\n\tresp, err := http.Get(url)\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\tdefer resp.Body.Close()\n\treturn io.ReadAll(resp.Body)\n}",
+    "func merge(ch1, ch2 <-chan int) <-chan int {\n\tout := make(chan int)\n\tgo func() {\n\t\tdefer close(out)\n\t\tfor ch1 != nil || ch2 != nil {\n\t\t\tselect {\n\t\t\tcase v, ok := <-ch1:\n\t\t\t\tif !ok { ch1 = nil } else { out <- v }\n\t\t\tcase v, ok := <-ch2:\n\t\t\t\tif !ok { ch2 = nil } else { out <- v }\n\t\t\t}\n\t\t}\n\t}()\n\treturn out\n}"
+  ]
+}
