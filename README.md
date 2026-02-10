@@ -58,8 +58,12 @@ The app launches in your terminal. Start typing!
 
 ## 🔄 Update
 
+The app checks for updates automatically on launch.  
+If a new version is available, press **Ctrl+U** on the splash screen to update instantly.
+
+You can also update manually:
 ```bash
-pip install --upgrade typing-cli
+pip install --user --upgrade typing-cli
 ```
 
 ## ⌨️ Keyboard Shortcuts
@@ -72,6 +76,7 @@ pip install --upgrade typing-cli
 | `Ctrl+L`       | Change language            |
 | `Ctrl+M`       | Switch mode (words/code)   |
 | `Ctrl+H`       | View score history         |
+| `Ctrl+U`       | Update to latest version   |
 | `Ctrl++/-`     | Zoom in/out                |
 | `Ctrl+Q`       | Quit                       |
 
@@ -99,6 +104,7 @@ Built-in:
 - Score history with date, WPM, accuracy
 - Multiple languages & themes
 - Splash screen with ASCII art
+- Auto-update: notifies and updates from the CLI
 - Clean, extensible architecture
 
 ## 🛠️ Development

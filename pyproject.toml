@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "typing-cli"
-version = "0.2.0"
+version = "0.3.0"
 description = "A beautiful CLI typing test to practice your typing speed"
 readme = "README.md"
 license = {text = "MIT"}
