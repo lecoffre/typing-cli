@@ -8,6 +8,8 @@ from textual.screen import Screen
 from textual.containers import Center, Middle
 from textual.widgets import Static
 
+from typingtest import __version__
+
 try:
     from pyfiglet import figlet_format
 except ImportError:
@@ -54,12 +56,19 @@ class SplashScreen(Screen):
         margin-top: 2;
         color: $text-disabled;
     }
-    SplashScreen #update-banner {
+    SplashScreen #version-label {
         width: auto;
         height: 1;
         content-align: center middle;
         text-align: center;
         margin-top: 1;
+        color: $text-disabled;
+    }
+    SplashScreen #update-banner {
+        width: auto;
+        height: 1;
+        content-align: center middle;
+        text-align: center;
         color: $warning;
     }
     """
@@ -72,6 +81,8 @@ class SplashScreen(Screen):
                 yield Static(SPLASH_ART, id="splash-art")
             with Center():
                 yield Static(TAGLINE, id="tagline")
+            with Center():
+                yield Static(f"v{__version__}", id="version-label")
             with Center():
                 yield Static("", id="update-banner")
             with Center():
