@@ -1,33 +1,30 @@
-# TODO
+# TODO — Publish typing-cli on PyPI
 
-## 🚀 Distribution
-- [ ] Publish v0.1.0 on PyPI (create release on GitHub → auto-publish via CI)
-- [ ] Configure PyPI trusted publishing (pypi.org → pending publisher)
-- [ ] Test `pip install typing-cli` after first publish
+## 1. Configure PyPI trusted publishing
+- [ ] Crée un compte sur [pypi.org](https://pypi.org/account/register/)
+- [ ] Va dans **Account settings → Publishing → Add new pending publisher**
+- [ ] Remplis :
+  - PyPI project name : `typing-cli`
+  - Owner : `lecoffre`
+  - Repository : `typing-cli`
+  - Workflow name : `publish.yml`
+  - Environment name : `pypi`
 
-## ✨ Features
-- [ ] Add more languages (Spanish, German, Italian, Portuguese…)
-- [ ] Custom word lists / user-imported texts
-- [ ] Multiplayer mode (race against friends)
-- [ ] Leaderboard (local or online)
-- [ ] Configurable test duration (15s, 30s, 60s, 120s)
-- [ ] Difficulty levels (common words → rare words → quotes)
-- [ ] Sound effects (optional, terminal bell or system sounds)
+## 2. Créer la première release
+- [ ] Va sur https://github.com/lecoffre/typing-cli/releases/new
+- [ ] Tag : `v0.1.0`
+- [ ] Title : `v0.1.0`
+- [ ] Description : `Initial release — CLI typing test with pixel-art F1 car`
+- [ ] Clique **Publish release**
+- [ ] Le workflow GitHub Actions build + publie automatiquement sur PyPI
 
-## 🎨 UI / UX
-- [ ] More themes
-- [ ] Customizable car colors
-- [ ] Animated podium on result screen
-- [ ] Smooth transitions between screens
+## 3. Vérifier
+- [ ] Attends 2-3 minutes que le workflow finisse
+- [ ] Vérifie sur https://pypi.org/project/typing-cli/
+- [ ] Teste : `pip install typing-cli && typing-cli`
 
-## 🏗️ Technical
-- [ ] Add unit tests (pytest)
-- [ ] CI pipeline for tests (GitHub Actions)
-- [ ] Type checking with mypy
-- [ ] Package size optimization
-- [ ] Cross-platform testing (Windows, macOS, Linux)
-
-## 📖 Documentation
-- [ ] Add screenshots / GIFs to README
-- [ ] Add CHANGELOG.md
-- [ ] Contribution guidelines (CONTRIBUTING.md)
+## Résultat
+N'importe qui pourra installer l'app avec :
+```
+pip install typing-cli
+```
