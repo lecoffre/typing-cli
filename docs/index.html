@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing-cli — Practice your typing speed in the terminal</title>
+    <meta name="description" content="A beautiful CLI typing test with real-time WPM, animated F1 car, themes, and gamification. Install with pip.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: { bg: '#1e1e2e', surface: '#181825', panel: '#313244', accent: '#82aaff', green: '#c3e88d', red: '#ff5370', text: '#cdd6f4', muted: '#6c7086' },
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+                        sans: ['"Inter"', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'typewriter': 'typewriter 3s steps(24) 1s forwards, blink 0.7s step-end infinite',
+                        'car-move': 'carMove 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        slideUp: { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        pulseGlow: { '0%, 100%': { boxShadow: '0 0 20px rgba(130,170,255,0.3)' }, '50%': { boxShadow: '0 0 40px rgba(130,170,255,0.6)' } },
+                        typewriter: { '0%': { width: '0' }, '100%': { width: '100%' } },
+                        blink: { '0%, 100%': { borderColor: 'transparent' }, '50%': { borderColor: '#82aaff' } },
+                        carMove: { '0%, 100%': { transform: 'translateX(0)' }, '50%': { transform: 'translateX(12px)' } },
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0a0f; }
+        .gradient-text { background: linear-gradient(135deg, #82aaff, #c3e88d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gradient-text-warm { background: linear-gradient(135deg, #fab387, #f38ba8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .glass { background: rgba(30, 30, 46, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(130, 170, 255, 0.1); }
+        .glass-strong { background: rgba(30, 30, 46, 0.85); backdrop-filter: blur(30px); border: 1px solid rgba(130, 170, 255, 0.15); }
+        .glow-border { box-shadow: 0 0 30px rgba(130, 170, 255, 0.15), inset 0 1px 0 rgba(255,255,255,0.05); }
+        .code-block { background: #11111b; border: 1px solid #313244; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px rgba(130,170,255,0.1); }
+        .feature-card { transition: all 0.3s ease; }
+        .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(130,170,255,0.15), transparent); }
+        .typing-demo { overflow: hidden; white-space: nowrap; border-right: 2px solid #82aaff; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: #313244; border-radius: 3px; }
+        .car-pixel { image-rendering: pixelated; }
+        .stat-number { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="font-sans text-midnight-text antialiased">
+
+    <!-- ─── NAV ─────────────────────────────────────────── -->
+    <nav class="fixed top-0 w-full z-50 glass-strong">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2">
+                <span class="text-2xl">⌨️</span>
+                <span class="font-mono font-bold text-lg text-white">typing-cli</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm text-midnight-muted">
+                <a href="#features" class="hover:text-midnight-accent transition-colors">Features</a>
+                <a href="#demo" class="hover:text-midnight-accent transition-colors">Demo</a>
+                <a href="#install" class="hover:text-midnight-accent transition-colors">Install</a>
+                <a href="https://github.com/lecoffre/typing-cli" target="_blank" class="flex items-center gap-1.5 hover:text-white transition-colors">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    GitHub
+                </a>
+            </div>
+            <a href="#install" class="bg-midnight-accent/10 text-midnight-accent px-4 py-2 rounded-lg text-sm font-medium hover:bg-midnight-accent/20 transition-colors border border-midnight-accent/20">
+                Get Started
+            </a>
+        </div>
+    </nav>
+
+    <!-- ─── HERO ────────────────────────────────────────── -->
+    <section class="relative min-h-screen flex items-center justify-center hero-glow pt-16">
+        <!-- Floating particles -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-midnight-accent/30 rounded-full animate-float" style="animation-delay: 0s;"></div>
+            <div class="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-midnight-green/20 rounded-full animate-float" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-1/3 left-1/3 w-1 h-1 bg-midnight-accent/20 rounded-full animate-float" style="animation-delay: 2s;"></div>
+            <div class="absolute top-2/3 right-1/4 w-1 h-1 bg-midnight-green/30 rounded-full animate-float" style="animation-delay: 3s;"></div>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <!-- ASCII art logo -->
+            <div class="animate-fade-in mb-8">
+                <pre class="font-mono text-midnight-accent text-[0.55rem] sm:text-xs md:text-sm leading-tight inline-block text-left"><code>  __               _                        ___ 
+ / /___  ______  (_)___  ____ _        ____/ (_)
+/ __/ / / / __ \/ / __ \/ __ `/  ____ / __/ / / 
+/ /_/ /_/ / /_/ / / / / / /_/ /  /___// /_/ / /  
+\__/\__, / .___/_/_/ /_/\__, /        \__/_/_/   
+   /____/_/            /____/                     </code></pre>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-slide-up" style="animation-delay: 0.2s; opacity: 0;">
+                Type faster.<br>
+                <span class="gradient-text">Right from your terminal.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-midnight-muted max-w-2xl mx-auto mb-10 animate-slide-up" style="animation-delay: 0.4s; opacity: 0;">
+                Real-time WPM tracking, animated pixel-art F1 car, multiple themes, gamification — all in a beautiful CLI.
+            </p>
+
+            <!-- Install command -->
+            <div class="animate-slide-up" style="animation-delay: 0.6s; opacity: 0;">
+                <div class="code-block rounded-xl p-1 inline-block max-w-lg w-full animate-pulse-glow">
+                    <div class="flex items-center gap-2 px-4 py-1">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-midnight-red/60"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/60"></div>
+                            <div class="w-3 h-3 rounded-full bg-midnight-green/60"></div>
+                        </div>
+                        <span class="text-midnight-muted text-xs font-mono ml-2">terminal</span>
+                    </div>
+                    <div class="bg-[#0a0a12] rounded-lg px-5 py-4 flex items-center justify-between gap-4">
+                        <code class="font-mono text-sm md:text-base">
+                            <span class="text-midnight-green">$</span>
+                            <span class="text-white"> pip install </span>
+                            <span class="text-midnight-accent">typing-cli</span>
+                        </code>
+                        <button onclick="navigator.clipboard.writeText('pip install --user typing-cli');this.textContent='✓ Copied!';setTimeout(()=>this.textContent='Copy',1500)" class="text-xs text-midnight-muted hover:text-white transition-colors bg-midnight-panel/50 px-3 py-1.5 rounded-md font-mono whitespace-nowrap">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats badges -->
+            <div class="flex flex-wrap items-center justify-center gap-4 mt-10 animate-slide-up" style="animation-delay: 0.8s; opacity: 0;">
+                <a href="https://pypi.org/project/typing-cli/" target="_blank" class="glass rounded-full px-4 py-2 text-sm font-mono text-midnight-muted hover:text-white transition-colors flex items-center gap-2">
+                    <span class="w-2 h-2 bg-midnight-green rounded-full"></span>
+                    PyPI
+                </a>
+                <span class="glass rounded-full px-4 py-2 text-sm font-mono text-midnight-muted flex items-center gap-2">
+                    <span class="w-2 h-2 bg-midnight-accent rounded-full"></span>
+                    Python 3.10+
+                </span>
+                <span class="glass rounded-full px-4 py-2 text-sm font-mono text-midnight-muted flex items-center gap-2">
+                    <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
+                    MIT License
+                </span>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <svg class="w-5 h-5 text-midnight-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+    </section>
+
+    <!-- ─── DEMO TERMINAL ───────────────────────────────── -->
+    <section id="demo" class="py-24 relative">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">See it in action</h2>
+                <p class="text-midnight-muted text-lg">A full typing experience, right in your terminal</p>
+            </div>
+
+            <!-- Terminal mockup -->
+            <div class="code-block rounded-2xl overflow-hidden glow-border max-w-3xl mx-auto animate-float">
+                <!-- Title bar -->
+                <div class="flex items-center gap-2 px-5 py-3 border-b border-midnight-panel/50">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-midnight-red/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-midnight-green/70"></div>
+                    </div>
+                    <span class="text-midnight-muted text-xs font-mono mx-auto">typing-cli</span>
+                </div>
+                <!-- Terminal content -->
+                <div class="p-6 md:p-8 font-mono text-sm md:text-base space-y-6">
+                    <!-- Typing area simulation -->
+                    <div class="space-y-2">
+                        <div>
+                            <span class="text-midnight-green">the quick brown fox jumps </span><span class="text-white bg-midnight-accent/30 px-0.5">o</span><span class="text-midnight-muted">ver the lazy dog while</span>
+                        </div>
+                        <div>
+                            <span class="text-midnight-muted">the sun sets behind the</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats bar -->
+                    <div class="flex items-center justify-between border-t border-midnight-panel pt-4 text-xs md:text-sm">
+                        <div class="flex items-center gap-6">
+                            <div>
+                                <span class="text-midnight-muted">WPM</span>
+                                <span class="text-midnight-accent font-bold text-lg md:text-xl ml-2 stat-number">72</span>
+                            </div>
+                            <div>
+                                <span class="text-midnight-muted">ACC</span>
+                                <span class="text-midnight-green font-bold text-lg md:text-xl ml-2 stat-number">96%</span>
+                            </div>
+                            <div>
+                                <span class="text-midnight-muted">STREAK</span>
+                                <span class="text-yellow-400 font-bold text-lg md:text-xl ml-2 stat-number">🔥 14</span>
+                            </div>
+                        </div>
+                        <div class="text-midnight-muted">
+                            ⏱ <span class="stat-number">0:24</span>
+                        </div>
+                    </div>
+
+                    <!-- F1 car (pixel-perfect canvas rendering) -->
+                    <div class="border-t border-midnight-panel pt-4 flex justify-center">
+                        <div class="animate-car-move">
+                            <canvas id="f1-car" width="230" height="80"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FEATURES ────────────────────────────────────── -->
+    <section id="features" class="py-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Everything you need</h2>
+                <p class="text-midnight-muted text-lg">to improve your typing speed</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">⚡</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Real-time WPM</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Live words-per-minute and accuracy tracking as you type. Timer starts on first keypress.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🏎️</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Pixel-art F1 Car</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">An animated F1 car that reacts to your speed. Type faster — watch it race across the screen.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🎮</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Gamification</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Streaks, combos, milestones, and a rank system from Bronze to Legendary. Stay motivated.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🎨</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">5 Themes</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Midnight, Forest, Sunset, Ocean, Mono. Switch instantly with Ctrl+T.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">💻</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Code Mode</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Practice typing real code snippets in Python, JavaScript, Rust, Go, and more.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🌍</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Multiple Languages</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">English and French word lists built-in. Switch with Ctrl+L.</p>
+                </div>
+                <!-- Card 7 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">📊</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Score History</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Track your progress over time with detailed score history. Date, WPM, accuracy logged.</p>
+                </div>
+                <!-- Card 8 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🔄</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Auto-update</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">The app checks for updates on launch. Press Ctrl+U to update instantly — no commands needed.</p>
+                </div>
+                <!-- Card 9 -->
+                <div class="feature-card glass rounded-2xl p-7">
+                    <div class="text-3xl mb-4">🪶</div>
+                    <h3 class="text-white font-semibold text-lg mb-2">Lightweight</h3>
+                    <p class="text-midnight-muted text-sm leading-relaxed">Pure Python. No Electron, no browser. Runs anywhere Python runs — fast and minimal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── KEYBOARD SHORTCUTS ──────────────────────────── -->
+    <section class="py-24">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Keyboard-first</h2>
+                <p class="text-midnight-muted text-lg">Everything at your fingertips</p>
+            </div>
+
+            <div class="glass rounded-2xl overflow-hidden glow-border">
+                <div class="grid grid-cols-2 text-sm font-mono">
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Tab</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Restart test</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Escape</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Back / Quit</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+T</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Change theme</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+L</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Change language</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+G</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Switch mode</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+H</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Score history</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+U</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Update</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-accent">Ctrl+/−</div>
+                    <div class="px-6 py-4 border-b border-midnight-panel/30 text-midnight-muted">Zoom in/out</div>
+                    <div class="px-6 py-4 text-midnight-accent">Ctrl+Q</div>
+                    <div class="px-6 py-4 text-midnight-muted">Quit</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CODE MODE — FOR DEVELOPERS ────────────────── -->
+    <section class="py-24 relative">
+        <div class="absolute inset-0 hero-glow opacity-30"></div>
+        <div class="max-w-5xl mx-auto px-6 relative">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Built for <span class="gradient-text">developers</span></h2>
+                <p class="text-midnight-muted text-lg">Practice typing real code in your favorite language</p>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-4 mb-12">
+                <!-- Python -->
+                <div class="glass rounded-2xl p-6 text-center feature-card group cursor-default">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🐍</div>
+                    <h3 class="text-white font-semibold mb-1">Python</h3>
+                    <p class="text-midnight-muted text-xs">def, class, list comprehensions</p>
+                </div>
+                <!-- TypeScript -->
+                <div class="glass rounded-2xl p-6 text-center feature-card group cursor-default">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                        <span class="bg-blue-500 text-white text-lg font-bold px-2 py-1 rounded">TS</span>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">TypeScript</h3>
+                    <p class="text-midnight-muted text-xs">interfaces, generics, async</p>
+                </div>
+                <!-- JavaScript -->
+                <div class="glass rounded-2xl p-6 text-center feature-card group cursor-default">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                        <span class="bg-yellow-400 text-black text-lg font-bold px-2 py-1 rounded">JS</span>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">JavaScript</h3>
+                    <p class="text-midnight-muted text-xs">arrow functions, promises, DOM</p>
+                </div>
+                <!-- Rust -->
+                <div class="glass rounded-2xl p-6 text-center feature-card group cursor-default">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">🦀</div>
+                    <h3 class="text-white font-semibold mb-1">Rust</h3>
+                    <p class="text-midnight-muted text-xs">ownership, traits, match</p>
+                </div>
+                <!-- Go -->
+                <div class="glass rounded-2xl p-6 text-center feature-card group cursor-default">
+                    <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                        <span class="bg-cyan-500 text-white text-lg font-bold px-2.5 py-1 rounded">Go</span>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1">Go</h3>
+                    <p class="text-midnight-muted text-xs">goroutines, structs, channels</p>
+                </div>
+            </div>
+
+            <!-- Code snippet preview -->
+            <div class="code-block rounded-2xl overflow-hidden glow-border max-w-2xl mx-auto">
+                <div class="flex items-center gap-2 px-5 py-3 border-b border-midnight-panel/50">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-midnight-red/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-midnight-green/70"></div>
+                    </div>
+                    <span class="text-midnight-muted text-xs font-mono mx-auto">code mode — python</span>
+                </div>
+                <div class="p-6 font-mono text-sm space-y-1">
+                    <div>
+                        <span class="text-midnight-green">def </span><span class="text-midnight-accent">fibonacci</span><span class="text-midnight-green">(</span><span class="text-white">n</span><span class="text-midnight-green">:</span> <span class="text-yellow-400">int</span><span class="text-midnight-green">)</span> <span class="text-midnight-green">-></span> <span class="text-yellow-400">list</span><span class="text-midnight-green">:</span>
+                    </div>
+                    <div>
+                        <span class="text-midnight-muted">    a, b = 0, 1</span>
+                    </div>
+                    <div>
+                        <span class="text-midnight-muted">    for _ in range(n):</span>
+                    </div>
+                    <div>
+                        <span class="text-midnight-muted">        a, b = b, a + b</span>
+                    </div>
+                    <div>
+                        <span class="text-midnight-muted">    return a</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-midnight-muted text-sm mt-6">Switch languages with <code class="text-midnight-accent font-mono">Ctrl+K</code> — switch to code mode with <code class="text-midnight-accent font-mono">Ctrl+G</code></p>
+        </div>
+    </section>
+
+    <!-- ─── INSTALL ─────────────────────────────────────── -->
+    <section id="install" class="py-24 relative">
+        <div class="absolute inset-0 hero-glow rotate-180 opacity-50"></div>
+        <div class="max-w-3xl mx-auto px-6 relative">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">Get started in seconds</h2>
+                <p class="text-midnight-muted text-lg">Just two commands. That's it.</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Step 1 -->
+                <div class="glass rounded-2xl p-8 glow-border">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="bg-midnight-accent/20 text-midnight-accent w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                        <span class="text-white font-semibold">Install</span>
+                    </div>
+                    <div class="code-block rounded-xl px-5 py-4 flex items-center justify-between">
+                        <code class="font-mono text-sm md:text-base">
+                            <span class="text-midnight-green">$</span>
+                            <span class="text-white"> pip install --user </span>
+                            <span class="text-midnight-accent">typing-cli</span>
+                        </code>
+                        <button onclick="navigator.clipboard.writeText('pip install --user typing-cli');this.textContent='✓';setTimeout(()=>this.textContent='⎘',1500)" class="text-midnight-muted hover:text-white transition-colors text-lg">⎘</button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass rounded-2xl p-8 glow-border">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="bg-midnight-green/20 text-midnight-green w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                        <span class="text-white font-semibold">Launch</span>
+                    </div>
+                    <div class="code-block rounded-xl px-5 py-4 flex items-center justify-between">
+                        <code class="font-mono text-sm md:text-base">
+                            <span class="text-midnight-green">$</span>
+                            <span class="text-white"> python -m </span>
+                            <span class="text-midnight-accent">typingtest</span>
+                        </code>
+                        <button onclick="navigator.clipboard.writeText('python -m typingtest');this.textContent='✓';setTimeout(()=>this.textContent='⎘',1500)" class="text-midnight-muted hover:text-white transition-colors text-lg">⎘</button>
+                    </div>
+                    <p class="text-midnight-muted text-xs mt-4">After first launch, <code class="text-midnight-accent">typing-cli</code> is auto-added to your PATH. Just restart your terminal and type <code class="text-midnight-accent">typing-cli</code>.</p>
+                </div>
+            </div>
+
+            <!-- Uninstall -->
+            <p class="text-center text-midnight-muted text-sm mt-8">
+                Uninstall: <code class="font-mono text-midnight-muted/70">pip uninstall typing-cli -y</code>
+            </p>
+        </div>
+    </section>
+
+    <!-- ─── CONTRIBUTE ────────────────────────────────── -->
+    <section class="py-24 relative">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="glass rounded-3xl p-10 md:p-16 text-center glow-border relative overflow-hidden">
+                <!-- Background glow -->
+                <div class="absolute inset-0 bg-gradient-to-br from-midnight-accent/5 via-transparent to-midnight-green/5 pointer-events-none"></div>
+
+                <div class="relative">
+                    <div class="text-5xl mb-6">🤝</div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Open source & community-driven</h2>
+                    <p class="text-midnight-muted text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+                        typing-cli is MIT licensed and built in the open. Whether you want to add a new language, create a theme, fix a bug, or suggest a feature — every contribution matters.
+                    </p>
+
+                    <div class="grid sm:grid-cols-3 gap-6 mb-10 text-left">
+                        <div class="glass rounded-xl p-5">
+                            <div class="text-2xl mb-2">🌍</div>
+                            <h3 class="text-white font-semibold text-sm mb-1">Add a language</h3>
+                            <p class="text-midnight-muted text-xs leading-relaxed">Drop a JSON word list and give the world a new language to practice</p>
+                        </div>
+                        <div class="glass rounded-xl p-5">
+                            <div class="text-2xl mb-2">🎨</div>
+                            <h3 class="text-white font-semibold text-sm mb-1">Create a theme</h3>
+                            <p class="text-midnight-muted text-xs leading-relaxed">Design a color palette and see it live in the terminal</p>
+                        </div>
+                        <div class="glass rounded-xl p-5">
+                            <div class="text-2xl mb-2">💻</div>
+                            <h3 class="text-white font-semibold text-sm mb-1">Add code snippets</h3>
+                            <p class="text-midnight-muted text-xs leading-relaxed">Contribute real-world code samples for any programming language</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="https://github.com/lecoffre/typing-cli" target="_blank" class="bg-white text-midnight-bg font-semibold px-8 py-3.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            Star on GitHub
+                        </a>
+                        <a href="https://github.com/lecoffre/typing-cli/issues" target="_blank" class="border border-midnight-accent/30 text-midnight-accent font-semibold px-8 py-3.5 rounded-xl hover:bg-midnight-accent/10 transition-colors text-sm">
+                            Open an issue
+                        </a>
+                        <a href="https://github.com/lecoffre/typing-cli/fork" target="_blank" class="border border-midnight-green/30 text-midnight-green font-semibold px-8 py-3.5 rounded-xl hover:bg-midnight-green/10 transition-colors text-sm">
+                            Fork & contribute
+                        </a>
+                    </div>
+
+                    <p class="text-midnight-muted text-xs mt-8">
+                        <code class="font-mono text-midnight-accent/70">git clone https://github.com/lecoffre/typing-cli.git</code>
+                        <span class="mx-2">→</span>
+                        <code class="font-mono text-midnight-accent/70">pip install -e .</code>
+                        <span class="mx-2">→</span>
+                        <span>You're ready to hack 🚀</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ──────────────────────────────────────── -->
+    <footer class="border-t border-midnight-panel/30 py-12">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">⌨️</span>
+                <span class="font-mono font-bold text-white">typing-cli</span>
+                <span class="text-midnight-muted text-sm">— MIT License</span>
+            </div>
+            <div class="flex items-center gap-6 text-sm text-midnight-muted">
+                <a href="https://pypi.org/project/typing-cli/" target="_blank" class="hover:text-white transition-colors">PyPI</a>
+                <a href="https://github.com/lecoffre/typing-cli" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+                <a href="https://github.com/lecoffre/typing-cli/issues" target="_blank" class="hover:text-white transition-colors">Issues</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ─── SCROLL ANIMATIONS ───────────────────────────── -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card, .glass').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ── F1 car animated canvas (exact port from character.py) ──
+        (function() {
+            const _ = 0, K = 1, R = 2, Y = 3, G = 4, P = 6;
+            const CAR = [
+                [K,K,K,_,_,_,_,_,K,K,_,_,_,_,_,_,_,_,_,_,_,_,_],
+                [K,R,K,_,_,_,K,K,R,K,_,_,_,_,_,_,_,_,_,_,_,_,_],
+                [K,R,K,_,_,K,R,R,R,K,K,_,_,_,_,_,_,_,_,_,_,_,_],
+                [K,R,K,K,K,R,R,R,R,K,Y,K,_,K,K,K,K,K,_,_,_,_,_],
+                [K,K,G,G,K,K,R,R,R,R,R,R,R,R,R,K,G,G,K,K,_,_,_],
+                [_,K,G,K,G,K,R,R,R,R,R,R,R,R,K,G,K,K,G,R,K,K,_],
+                [_,K,G,K,G,K,R,R,R,R,R,R,R,K,K,G,K,K,G,R,R,R,K],
+                [_,_,K,K,K,K,K,K,K,K,K,K,_,_,K,K,K,K,K,K,K,K,K],
+            ];
+            const CANVAS_W = 34, CANVAS_H = 8, N_FRAMES = 8;
+            const pal = { 1:'#1e1e2e', 2:'#dc2626', 3:'#facc15', 4:'#4b5563', 6:'#585b70' };
+            const OSC = [0,1,2,2,2,1,0,0];
+            // Wheel spoke positions (G pixels on rows 4-7)
+            const WHEEL_CELLS = [
+                [4,2],[4,3],[5,2],[5,4],[6,2],[6,4],       // rear wheel
+                [4,16],[4,17],[5,15],[5,18],[6,15],[6,18],  // front wheel
+            ];
+            const SPOKE_COLORS = ['#4b5563','#5b6577','#6b7280','#5b6577'];
+
+            // "turbo" tier for the demo: osc=2, trail=4, particles on rows 2,5,7
+            const AMP = 2, TRAIL_LEN = 4, P_ROWS = [2, 5, 7];
+
+            const px = 8;
+            const el = document.getElementById('f1-car');
+            el.width = CANVAS_W * px;
+            el.height = CANVAS_H * px;
+            el.style.width = (CANVAS_W * px) + 'px';
+            el.style.height = (CANVAS_H * px) + 'px';
+            el.style.imageRendering = 'pixelated';
+            const ctx = el.getContext('2d');
+
+            let frame = 0;
+
+            function buildCanvas(f) {
+                // Init empty
+                const grid = [];
+                for (let r = 0; r < CANVAS_H; r++) grid.push(new Array(CANVAS_W).fill(0));
+
+                const oscVal = OSC[f % N_FRAMES];
+                const offset = Math.round(oscVal * AMP / 2);
+
+                // Place car
+                for (let r = 0; r < CAR.length; r++) {
+                    for (let c = 0; c < CAR[r].length; c++) {
+                        const dc = c + offset;
+                        if (dc >= 0 && dc < CANVAS_W && CAR[r][c] !== 0) {
+                            grid[r][dc] = CAR[r][c];
+                        }
+                    }
+                }
+
+                // Trail: sparse pixels behind car body (rows 4-7)
+                for (const tr of [4, 5, 6, 7]) {
+                    for (let i = 1; i <= TRAIL_LEN; i++) {
+                        const tc = offset - i;
+                        if ((i + tr + f) % 3 === 0) continue;
+                        if (tc >= 0 && tc < CANVAS_W && grid[tr][tc] === 0) {
+                            grid[tr][tc] = P;
+                        }
+                    }
+                }
+
+                // Particles: single dots scrolling left, behind car only
+                const carLeft = offset;
+                P_ROWS.forEach((pr, pi) => {
+                    let pc = ((carLeft - 2 - pi * 7 - f * 2) % CANVAS_W + CANVAS_W) % CANVAS_W;
+                    if (pc >= carLeft) return;
+                    if (pr >= 0 && pr < CANVAS_H && pc >= 0 && pc < CANVAS_W && grid[pr][pc] === 0) {
+                        grid[pr][pc] = P;
+                    }
+                });
+
+                return { grid, offset };
+            }
+
+            function render(f) {
+                ctx.clearRect(0, 0, el.width, el.height);
+                const { grid, offset } = buildCanvas(f);
+
+                // Wheel spoke animation: cycle colors
+                const spokePhase = f % SPOKE_COLORS.length;
+
+                for (let r = 0; r < CANVAS_H; r++) {
+                    for (let c = 0; c < CANVAS_W; c++) {
+                        const v = grid[r][c];
+                        if (v === 0) continue;
+
+                        // Check if this is a wheel cell (animate spokes)
+                        let color = pal[v];
+                        if (v === G) {
+                            const localC = c - offset;
+                            const isWheel = WHEEL_CELLS.some(w => w[0] === r && w[1] === localC);
+                            if (isWheel) {
+                                // Alternate spoke brightness per frame
+                                const cellIdx = WHEEL_CELLS.findIndex(w => w[0] === r && w[1] === localC);
+                                color = SPOKE_COLORS[(spokePhase + cellIdx) % SPOKE_COLORS.length];
+                            }
+                        }
+
+                        ctx.fillStyle = color;
+                        ctx.fillRect(c * px, r * px, px, px);
+                    }
+                }
+            }
+
+            // Animate at 150ms like the CLI app
+            render(0);
+            setInterval(() => {
+                frame = (frame + 1) % N_FRAMES;
+                render(frame);
+            }, 150);
+        })();
+    </script>
+</body>
+</html>
